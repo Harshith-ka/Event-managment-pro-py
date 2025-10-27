@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="container py-5">
+  <div class="row justify-content-center">
+    <div class="col-md-8">
+      <div class="card shadow-sm p-4">
+        <h4 class="mb-3">Register for an Event</h4>
+        <form method="POST">
+          <div class="row g-3">
+            <div class="col-md-6">
+              <label class="form-label">Your Name</label>
+              <input type="text" class="form-control" name="name" required>
+            </div>
+            <div class="col-md-6">
+              <label class="form-label">Email</label>
+              <input type="email" class="form-control" name="email" required>
+            </div>
+            <div class="col-12">
+              <label class="form-label">Select Event</label>
+              <select name="event_id" class="form-select" required>
+                <option value="" disabled selected>Choose an event</option>
+                {% for e in events %}
+                <option value="{{ e[0] }}">{{ e[1] }} — {{ e[2] }}</option>
+                {% endfor %}
+              </select>
+            </div>
+            <div class="col-12 text-end">
+              <button class="btn btn-success">Register</button>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

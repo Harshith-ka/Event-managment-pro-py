@@ -1,0 +1,109 @@
+{% extends "base.html" %}
+{% block title %}My Dashboard{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+
+  <!-- Top Section: User Greeting + Actions -->
+  <div class="d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center mb-4">
+    <div>
+      <h2 class="fw-bold mb-1">Hey, {{ user.username }} 👋</h2>
+      <p class="text-muted mb-0">Here’s what’s happening with your events today.</p>
+    </div>
+    <div class="mt-3 mt-md-0">
+      <a href="{{ url_for('events_list') }}" class="btn btn-outline-secondary me-2 rounded-pill">
+        <i class="bi bi-compass"></i> Explore Events
+      </a>
+      <a href="{{ url_for('user_add_event') }}" class="btn btn-primary rounded-pill">
+        <i class="bi bi-plus-circle"></i> Post Event
+      </a>
+    </div>
+  </div>
+
+  <!-- User Stats Section -->
+  <div class="row text-center mb-5">
+    <div class="col-md-4 mb-3">
+      <div class="card shadow-sm border-0 rounded-4 py-4 hover-card">
+        <h4 class="fw-bold text-primary mb-0">{{ my_events|length }}</h4>
+        <p class="text-muted mb-0">My Posted Events</p>
+      </div>
+    </div>
+    <div class="col-md-4 mb-3">
+      <div class="card shadow-sm border-0 rounded-4 py-4 hover-card">
+        <h4 class="fw-bold text-success mb-0">{{ registered_events|length if registered_events else 0 }}</h4>
+        <p class="text-muted mb-0">Registered Events</p>
+      </div>
+    </div>
+    <div class="col-md-4 mb-3">
+      <div class="card shadow-sm border-0 rounded-4 py-4 hover-card">
+        <h4 class="fw-bold text-warning mb-0">{{ upcoming_events|length if upcoming_events else 0 }}</h4>
+        <p class="text-muted mb-0">Upcoming Events</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- My Events Section -->
+  <div class="d-flex justify-content-between align-items-center mb-3">
+    <h4 class="fw-bold">My Posted Events</h4>
+    {% if my_events %}
+      <a href="{{ url_for('user_add_event') }}" class="text-decoration-none small fw-semibold text-primary">+ Add More</a>
+    {% endif %}
+  </div>
+
+  {% if my_events %}
+  <div class="row">
+    {% for e in my_events %}
+    <div class="col-md-4 mb-4">
+      <div class="card event-card shadow-sm border-0 rounded-4 h-100 hover-scale">
+        {% if e[5] %}
+        <img src="{{ url_for('static', filename='uploads/' ~ e[5]) }}" 
+             class="card-img-top rounded-top-4" 
+             height="180" 
+             style="object-fit: cover;">
+        {% else %}
+        <div class="bg-light d-flex align-items-center justify-content-center rounded-top-4" style="height:180px;">
+          <i class="bi bi-image text-muted fs-2"></i>
+        </div>
+        {% endif %}
+        <div class="card-body">
+          <h5 class="fw-bold mb-1">{{ e[1] }}</h5>
+          <p class="text-muted small mb-2"><i class="bi bi-calendar-event"></i> {{ e[2] }}</p>
+          <p class="text-muted small"><i class="bi bi-geo-alt"></i> {{ e[3] }}</p>
+          <a href="{{ url_for('event_detail', event_id=e[0]) }}" class="btn btn-sm btn-outline-primary rounded-pill mt-2">
+            View Details
+          </a>
+        </div>
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+  {% else %}
+  <div class="alert alert-light text-center border rounded-4 mt-4 py-5">
+    <i class="bi bi-calendar-x text-muted fs-1 mb-3 d-block"></i>
+    <h5 class="fw-bold mb-1">No events yet</h5>
+    <p class="text-muted mb-3">You haven’t posted any events yet. Start by adding your first one!</p>
+    <a href="{{ url_for('user_add_event') }}" class="btn btn-primary rounded-pill">
+      + Post Your First Event
+    </a>
+  </div>
+  {% endif %}
+
+</div>
+
+<!-- Custom Styling -->
+<style>
+  .hover-card {
+    transition: all 0.3s ease;
+  }
+  .hover-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 6px 20px rgba(0,0,0,0.1);
+  }
+  .hover-scale {
+    transition: transform 0.25s ease;
+  }
+  .hover-scale:hover {
+    transform: scale(1.02);
+  }
+</style>
+{% endblock %}

@@ -1,0 +1,416 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>Admin Dashboard - Smart Event Manager</title>
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+
+    <!-- Bootstrap & Icons -->
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css"
+      rel="stylesheet"
+    />
+
+    <style>
+      body {
+        background: #f4f6fb;
+        font-family: "Poppins", sans-serif;
+      }
+
+      .navbar {
+        background: linear-gradient(135deg, #007bff, #6f42c1);
+      }
+
+      .navbar-brand {
+        font-weight: 600;
+        letter-spacing: 0.5px;
+      }
+      h2 {
+        font-weight: 700;
+        color: #333;
+      }
+
+      .card {
+        border: none;
+        border-radius: 15px;
+        overflow: hidden;
+        transition: all 0.3s ease;
+      }
+      .card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.08);
+      }
+
+      .card-header {
+        border-top-left-radius: 15px !important;
+        border-top-right-radius: 15px !important;
+      }
+
+      .form-control,
+      .form-select,
+      textarea {
+        border-radius: 10px;
+      }
+
+      .btn-success {
+        border-radius: 10px;
+        padding: 10px 20px;
+        font-weight: 500;
+      }
+
+      .event-card img {
+        height: 200px;
+        object-fit: cover;
+      }
+
+      .badge-status {
+        position: absolute;
+        top: 12px;
+        left: 12px;
+        padding: 6px 12px;
+        font-size: 0.75rem;
+        font-weight: 600;
+        border-radius: 50px;
+        color: #fff;
+      }
+      .badge-upcoming {
+        background: linear-gradient(135deg, #00c6ff, #0072ff);
+      }
+      .badge-ongoing {
+        background: linear-gradient(135deg, #ffb347, #ffcc33);
+      }
+      .badge-completed {
+        background: linear-gradient(135deg, #868f96, #596164);
+      }
+
+      footer {
+        text-align: center;
+        padding: 20px 0;
+        color: #777;
+        font-size: 0.9rem;
+        margin-top: 40px;
+      }
+
+      /* Search/filter bar styling */
+      .filter-bar {
+        background: #fff;
+        border-radius: 15px;
+        padding: 15px 20px;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+        margin-bottom: 25px;
+      }
+
+      /* Comment section */
+      .comments-section {
+        background: #fff;
+        border-radius: 12px;
+        padding: 15px;
+        box-shadow: 0 3px 10px rgba(0, 0, 0, 0.05);
+        margin-top: 15px;
+      }
+
+      .comment-item {
+        border-bottom: 1px solid #eee;
+        padding: 10px 0;
+      }
+      .comment-item:last-child {
+        border-bottom: none;
+      }
+
+      .comment-meta {
+        font-size: 0.85rem;
+        color: #666;
+      }
+
+      .comment-text {
+        font-size: 0.95rem;
+        color: #333;
+      }
+    </style>
+  </head>
+
+  <body>
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg navbar-dark shadow">
+      <div class="container-fluid px-4">
+        <a class="navbar-brand fs-5" href="{{ url_for('index') }}">
+          <i class="bi bi-calendar-event me-2"></i>Smart Event Manager
+        </a>
+
+        <div class="d-flex align-items-center gap-2">
+          <a href="{{ url_for('admin_users') }}" class="btn btn-light btn-sm">
+            <i class="bi bi-people-fill me-1"></i> View Users
+          </a>
+
+          <a
+            href="{{ url_for('admin_logout') }}"
+            class="btn btn-outline-light btn-sm"
+          >
+            <i class="bi bi-box-arrow-right me-1"></i> Logout
+          </a>
+        </div>
+      </div>
+    </nav>
+
+    <div class="container py-5">
+      <h2 class="mb-4 text-center">Admin Dashboard</h2>
+
+      {% with messages = get_flashed_messages() %}
+      {% if messages %}
+      <div class="alert alert-info text-center shadow-sm">{{ messages[0] }}</div>
+      {% endif %}
+      {% endwith %}
+
+      <!-- Add Event Form -->
+      <div class="card shadow-sm mb-5">
+        <div class="card-header bg-primary text-white">
+          <h5 class="mb-0">
+            <i class="bi bi-plus-circle me-2"></i>Add New Event
+          </h5>
+        </div>
+        <div class="card-body">
+          <form
+            action="{{ url_for('add_event') }}"
+            method="POST"
+            enctype="multipart/form-data"
+          >
+            <div class="row g-3">
+              <div class="col-md-6">
+                <label class="form-label">Event Name</label>
+                <input
+                  name="name"
+                  type="text"
+                  class="form-control"
+                  placeholder="Enter event name"
+                  required
+                />
+              </div>
+              <div class="col-md-3">
+                <label class="form-label">Date</label>
+                <input name="date" type="date" class="form-control" required />
+              </div>
+              <div class="col-md-3">
+                <label class="form-label">Venue</label>
+                <input
+                  name="venue"
+                  type="text"
+                  class="form-control"
+                  placeholder="Venue"
+                  required
+                />
+              </div>
+              <div class="col-md-6">
+                <label class="form-label">Event Type</label>
+                <select
+                  name="event_type"
+                  id="event_type"
+                  class="form-select"
+                  onchange="togglePriceField()"
+                >
+                  <option value="Free">Free</option>
+                  <option value="Paid">Paid</option>
+                </select>
+              </div>
+              <div class="col-md-6" id="price_field" style="display: none">
+                <label class="form-label">Ticket Price (₹)</label>
+                <input
+                  name="price"
+                  type="number"
+                  min="0"
+                  class="form-control"
+                  placeholder="Enter ticket price"
+                />
+              </div>
+              <div class="col-12">
+                <label class="form-label">Description</label>
+                <textarea
+                  name="description"
+                  class="form-control"
+                  rows="3"
+                  placeholder="Enter event description"
+                ></textarea>
+              </div>
+              <div class="col-12">
+                <label class="form-label">Event Photo</label>
+                <input
+                  type="file"
+                  name="photo"
+                  accept="image/*"
+                  class="form-control"
+                />
+              </div>
+              <div class="col-12 text-end">
+                <button class="btn btn-success mt-3" type="submit">
+                  <i class="bi bi-cloud-upload me-1"></i> Add Event
+                </button>
+              </div>
+            </div>
+          </form>
+        </div>
+      </div>
+
+      <!-- 🔍 Search & Filter Bar -->
+      <div class="filter-bar">
+        <div class="row g-3 align-items-center">
+          <div class="col-md-4">
+            <input
+              type="text"
+              id="searchInput"
+              class="form-control"
+              placeholder="Search event by name..."
+            />
+          </div>
+          <div class="col-md-3">
+            <select id="typeFilter" class="form-select">
+              <option value="">All Types</option>
+              <option value="Free">Free</option>
+              <option value="Paid">Paid</option>
+            </select>
+          </div>
+          <div class="col-md-3">
+            <select id="statusFilter" class="form-select">
+              <option value="">All Status</option>
+              <option value="Upcoming">Upcoming</option>
+              <option value="Ongoing">Ongoing</option>
+              <option value="Completed">Completed</option>
+            </select>
+          </div>
+        </div>
+      </div>
+
+      <!-- All Events -->
+      <div class="card shadow-sm">
+        <div class="card-header bg-secondary text-white">
+          <h5 class="mb-0"><i class="bi bi-list-ul me-2"></i>All Events</h5>
+        </div>
+        <div class="card-body">
+          <div class="row" id="eventContainer">
+            {% set today = datetime.utcnow().strftime("%Y-%m-%d") %}
+            {% for e in events %}
+            {% set status = "Upcoming" if e[2] > today else "Ongoing" if e[2] ==
+            today else "Completed" %}
+            <div
+              class="col-md-4 mb-4 event-card-wrapper"
+              data-name="{{ e[1]|lower }}"
+              data-type="{{ e[6]|default('Free') }}"
+              data-status="{{ status }}"
+            >
+              <div class="card event-card position-relative h-100 shadow-sm">
+                <span class="badge-status badge-{{ status|lower }}"
+                  >{{ status }}</span
+                >
+                {% if e[5] %}
+                <img
+                  src="{{ url_for('static', filename='uploads/' + e[5]) }}"
+                  alt="{{ e[1] }}"
+                />
+                {% else %}
+                <img
+                  src="{{ url_for('static', filename='default.jpg') }}"
+                  alt="Default Event"
+                />
+                {% endif %}
+
+                <div class="card-body">
+                  <h5 class="card-title">{{ e[1] }}</h5>
+                  <p class="text-muted mb-1">
+                    <strong>Date:</strong> {{ e[2] }}
+                  </p>
+                  <p class="text-muted mb-1">
+                    <strong>Venue:</strong> {{ e[3] }}
+                  </p>
+                  <p class="small text-secondary">
+                    {{ e[4][:120] }}{% if e[4]|length > 120 %}...{% endif %}
+                  </p>
+
+                  <!-- 💬 Comments Section -->
+                  <div class="comments-section mt-3">
+                    <h6 class="text-primary mb-2">
+                      <i class="bi bi-chat-dots me-1"></i> Comments
+                    </h6>
+                    {% for c in comments if c.event_id == e[0] %}
+                    <div class="comment-item">
+                      <div class="comment-meta">
+                        <strong>{{ c.username }}</strong>
+                        <span class="text-muted float-end"
+                          >{{ c.timestamp.strftime("%d %b %Y, %I:%M %p") }}</span
+                        >
+                      </div>
+                      <div class="comment-text">{{ c.text }}</div>
+                      <a href="{{ url_for('delete_comment', comment_id=c.id) }}" class="btn btn-sm btn-outline-danger mt-1">
+    <i class="bi bi-trash"></i> Delete
+</a>
+                    </div>
+                    {% else %}
+                    <p class="text-muted small">No comments yet.</p>
+                    {% endfor %}
+                  </div>
+                </div>
+
+                <div class="card-footer bg-white border-0 text-center">
+                  <a
+                    href="#"
+                    class="btn btn-outline-primary btn-sm"
+                    data-bs-toggle="modal"
+                    data-bs-target="#editModal{{ e[0] }}"
+                  >
+                    <i class="bi bi-pencil-square me-1"></i> Edit
+                  </a>
+                  <a
+                    href="{{ url_for('delete_event', id=e[0]) }}"
+                    class="btn btn-outline-danger btn-sm"
+                  >
+                    <i class="bi bi-trash me-1"></i> Delete
+                  </a>
+                </div>
+              </div>
+            </div>
+            {% else %}
+            <p class="text-center text-muted">No events found.</p>
+            {% endfor %}
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <footer>
+      <p>© {{ datetime.utcnow().year }} Smart Event Manager | Admin Panel</p>
+    </footer>
+
+    <script>
+      function togglePriceField() {
+        const type = document.getElementById("event_type").value;
+        document.getElementById("price_field").style.display =
+          type === "Paid" ? "block" : "none";
+      }
+
+      // 🔎 Search & Filter Functionality
+      document.addEventListener("input", () => {
+        const searchVal = document
+          .getElementById("searchInput")
+          .value.toLowerCase();
+        const typeVal = document.getElementById("typeFilter").value;
+        const statusVal = document.getElementById("statusFilter").value;
+
+        document.querySelectorAll(".event-card-wrapper").forEach((card) => {
+          const name = card.dataset.name;
+          const type = card.dataset.type;
+          const status = card.dataset.status;
+
+          const matchesSearch = name.includes(searchVal);
+          const matchesType = !typeVal || type === typeVal;
+          const matchesStatus = !statusVal || status === statusVal;
+
+          card.style.display =
+            matchesSearch && matchesType && matchesStatus ? "block" : "none";
+        });
+      });
+    </script>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+  </body>
+</html>

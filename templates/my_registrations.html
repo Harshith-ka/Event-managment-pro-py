@@ -1,0 +1,41 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="container py-5">
+  <h3 class="mb-3">My Registrations</h3>
+  <p class="text-muted">Signed in as <strong>{{ user_email }}</strong></p>
+
+  {% if registrations %}
+  <div class="row g-4">
+    {% for r in registrations %}
+    <div class="col-md-6">
+      <div class="card shadow-sm">
+        <div class="row g-0">
+          <div class="col-4">
+            {% if r.photo %}
+            <img src="{{ url_for('static', filename='uploads/' + r.photo) }}" style="width:100%;height:100%;object-fit:cover;">
+            {% else %}
+            <img src="{{ url_for('static', filename='default.jpg') }}" style="width:100%;height:100%;object-fit:cover;">
+            {% endif %}
+          </div>
+          <div class="col-8">
+            <div class="card-body">
+              <h5>{{ r.event_name }}</h5>
+              <p class="text-muted mb-1"><strong>Date:</strong> {{ r.event_date }}</p>
+              <p class="text-muted mb-1"><strong>Venue:</strong> {{ r.event_venue }}</p>
+              <p class="small text-secondary mb-2">Status: <span class="fw-semibold">{{ r.status|capitalize }}</span></p>
+              <form method="POST" onsubmit="return confirm('Cancel this registration?');">
+                <input type="hidden" name="reg_id" value="{{ r.reg_id }}">
+                <button class="btn btn-outline-danger btn-sm">Cancel Registration</button>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+  {% else %}
+  <div class="alert alert-info">You have no registrations yet. <a href="{{ url_for('events_list') }}">View events</a>.</div>
+  {% endif %}
+</div>
+{% endblock %}

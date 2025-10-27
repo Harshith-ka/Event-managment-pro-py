@@ -1,0 +1,107 @@
+{% extends "base.html" %}
+{% block content %}
+
+<style>
+  body {
+    background: linear-gradient(135deg, #6f42c1, #007bff);
+    font-family: 'Poppins', sans-serif;
+    color: #333;
+  }
+
+  .login-container {
+    max-width: 420px;
+    margin: 80px auto;
+    background: #fff;
+    border-radius: 20px;
+    padding: 2.5rem;
+    box-shadow: 0 10px 35px rgba(0, 0, 0, 0.15);
+    animation: slideUp 0.6s ease;
+  }
+
+  @keyframes slideUp {
+    from { transform: translateY(40px); opacity: 0; }
+    to { transform: translateY(0); opacity: 1; }
+  }
+
+  .login-container h3 {
+    text-align: center;
+    font-weight: 700;
+    color: #4b0082;
+    margin-bottom: 1.5rem;
+  }
+
+  .form-control {
+    border-radius: 12px;
+    border: 1px solid #ccc;
+    padding: 0.8rem;
+  }
+
+  .form-control:focus {
+    border-color: #6f42c1;
+    box-shadow: 0 0 0 0.2rem rgba(111, 66, 193, 0.25);
+  }
+
+  .btn-primary {
+    background: linear-gradient(135deg, #6f42c1, #007bff);
+    border: none;
+    border-radius: 12px;
+    width: 100%;
+    padding: 0.8rem;
+    font-weight: 600;
+    transition: 0.3s;
+  }
+
+  .btn-primary:hover {
+    transform: scale(1.03);
+    background: linear-gradient(135deg, #5a32a3, #0066d1);
+  }
+
+  .login-footer {
+    text-align: center;
+    margin-top: 1.2rem;
+    font-size: 0.9rem;
+    color: #555;
+  }
+
+  .login-footer a {
+    color: #007bff;
+    text-decoration: none;
+    font-weight: 500;
+  }
+
+  .login-footer a:hover {
+    text-decoration: underline;
+  }
+
+  .brand-icon {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 3rem;
+    color: #6f42c1;
+    margin-bottom: 1rem;
+  }
+</style>
+
+<div class="login-container">
+  <div class="brand-icon">
+    <i class="bi bi-person-circle"></i>
+  </div>
+  <h3>Organizer Login</h3>
+  <form method="POST">
+    <div class="mb-3">
+      <label class="form-label fw-semibold">Username</label>
+      <input type="text" name="username" class="form-control" placeholder="Enter username" required>
+    </div>
+    <div class="mb-3">
+      <label class="form-label fw-semibold">Password</label>
+      <input type="password" name="password" class="form-control" placeholder="Enter password" required>
+    </div>
+    <button class="btn btn-primary mt-3">Login</button>
+  </form>
+  <div class="login-footer">
+    <p>Back to <a href="{{ url_for('index') }}">Home</a></p>
+  </div>
+</div>
+
+{% endblock %}

@@ -1,0 +1,359 @@
+{% extends "base.html" %}
+{% block content %}
+
+<style>
+  body {
+    font-family: 'Inter', 'Poppins', sans-serif;
+    background-color: #f5f7ff;
+    color: #1e1e2f;
+    overflow-x: hidden;
+  }
+
+  /* 🌟 Navbar */
+  .navbar-custom {
+   background: linear-gradient(90deg, #5a67d8, #805ad5);
+    padding: 1rem 2rem;
+  }
+  .navbar-brand {
+    font-weight: 700;
+    color: #fff !important;
+    font-size: 1.4rem;
+  }
+  .navbar-nav .nav-link {
+    color: #e2e8f0 !important;
+    margin-right: 20px;
+    font-weight: 500;
+  }
+  .navbar-nav .nav-link:hover {
+    color: #fff !important;
+  }
+
+  /* 🎯 Hero Section */
+  .hero-section {
+    min-height: 85vh;
+    background: linear-gradient(115deg, #5a67d8, #805ad5, #6b46c1);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    text-align: center;
+    padding: 0 20px;
+  }
+
+  .hero-content {
+    max-width: 700px;
+    backdrop-filter: blur(8px);
+    background: rgba(255, 255, 255, 0.1);
+    padding: 40px;
+    border-radius: 20px;
+    animation: fadeIn 1s ease-in-out;
+  }
+
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .hero-content h1 {
+    font-weight: 800;
+    font-size: 3.2rem;
+  }
+
+  .hero-content p {
+    font-size: 1.1rem;
+    color: #e2e8f0;
+    margin-top: 10px;
+  }
+
+  .hero-btn {
+    background: #ffcd39;
+    color: #1e1e2f;
+    font-weight: 600;
+    border: none;
+    border-radius: 50px;
+    padding: 12px 28px;
+    margin-top: 20px;
+    transition: all 0.3s ease;
+  }
+
+  .hero-btn:hover {
+    transform: scale(1.05);
+    background: #ffe680;
+  }
+
+  /* 🪩 Event Section */
+  #events {
+    padding: 100px 0;
+  }
+
+  #events h2 {
+    font-weight: 700;
+    color: #1a202c;
+    position: relative;
+    font-size: 2rem;
+    margin-bottom: 40px;
+  }
+
+  #events h2::after {
+    content: '';
+    width: 80px;
+    height: 4px;
+    background: linear-gradient(90deg, #5a67d8, #805ad5);
+    display: block;
+    margin: 10px auto;
+    border-radius: 10px;
+  }
+
+  /* 🔍 Search and Filter */
+  .search-bar {
+    background: #fff;
+    padding: 20px 30px;
+    border-radius: 15px;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+    margin-bottom: 40px;
+  }
+
+  .event-card {
+    border: none;
+    border-radius: 16px;
+    overflow: hidden;
+    box-shadow: 0 8px 20px rgba(0,0,0,0.08);
+    transition: all 0.4s ease;
+    background: #fff;
+  }
+
+  .event-card:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 15px 30px rgba(0,0,0,0.15);
+  }
+
+  .event-card img {
+    height: 230px;
+    object-fit: cover;
+  }
+
+  .badge-status {
+    position: absolute;
+    top: 15px;
+    left: 15px;
+    background: linear-gradient(135deg, #5a67d8, #805ad5);
+    color: white;
+    font-weight: 600;
+    font-size: 0.8rem;
+    padding: 5px 12px;
+    border-radius: 50px;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+  }
+
+  .card-body h5 {
+    font-weight: 700;
+    color: #2d3748;
+  }
+
+  .card-body p {
+    color: #4a5568;
+  }
+
+  .btn-register {
+    background: linear-gradient(135deg, #5a67d8, #805ad5);
+    color: white;
+    border-radius: 10px;
+    border: none;
+    transition: all 0.3s ease;
+    font-weight: 500;
+    padding: 10px 20px;
+  }
+
+  .btn-register:hover {
+    background: linear-gradient(135deg, #805ad5, #6b46c1);
+    transform: scale(1.03);
+  }
+
+  /* 💼 About Us Section */
+  #about {
+    background: #fff;
+    padding: 100px 0;
+  }
+
+  #about h2 {
+    font-weight: 700;
+    color: #1a202c;
+    position: relative;
+    font-size: 2rem;
+    margin-bottom: 50px;
+    text-align: center;
+  }
+
+  #about h2::after {
+    content: '';
+    width: 80px;
+    height: 4px;
+    background: linear-gradient(90deg, #5a67d8, #805ad5);
+    display: block;
+    margin: 10px auto;
+    border-radius: 10px;
+  }
+
+  .about-text {
+    max-width: 800px;
+    margin: 0 auto 50px auto;
+    text-align: center;
+    color: #4a5568;
+    font-size: 1.05rem;
+  }
+
+  .about-features {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 25px;
+  }
+
+  .feature-card {
+    background: #f8f9ff;
+    padding: 25px;
+    border-radius: 16px;
+    width: 260px;
+    box-shadow: 0 8px 20px rgba(0,0,0,0.05);
+    transition: all 0.3s ease;
+    text-align: center;
+  }
+
+  .feature-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+  }
+
+  .feature-icon {
+    font-size: 2rem;
+    color: #5a67d8;
+    margin-bottom: 10px;
+  }
+
+  /* 🌍 Footer */
+  footer {
+    background: #1a202c;
+    color: #a0aec0;
+    text-align: center;
+    padding: 30px;
+    margin-top: 80px;
+  }
+  footer p {
+    margin: 0;
+    font-size: 0.9rem;
+  }
+</style>
+
+<!-- 🌟 Navbar -->
+<nav class="navbar navbar-expand-lg navbar-custom">
+  <div class="container-fluid">
+    <a class="navbar-brand" href="#">Smart Event Manager</a>
+  </div>
+</nav>
+
+<!-- 🌈 Hero -->
+<div class="hero-section">
+  <div class="hero-content">
+    <h1>Discover Amazing Events Around You</h1>
+    <p>Join tech fests, workshops, and cultural programs — all in one platform.</p>
+    <a href="/events" class="btn hero-btn">Explore Events</a>
+  </div>
+</div>
+
+<!-- 🎉 Event Cards -->
+<section id="events" class="container text-center">
+  <h2>Upcoming & Ongoing Events</h2>
+
+  <!-- 🔍 Search and Filter -->
+  <div class="search-bar row justify-content-center g-3 mb-5">
+    <div class="col-md-6">
+      <input type="text" id="searchInput" class="form-control" placeholder="Search by event name or venue...">
+    </div>
+    <div class="col-md-3">
+      <select id="typeFilter" class="form-select">
+        <option value="">All Types</option>
+        <option value="Free">Free</option>
+        <option value="Paid">Paid</option>
+      </select>
+    </div>
+  </div>
+
+  <div class="row g-4 justify-content-center" id="eventContainer">
+    {% for event in events %}
+    {% set today = datetime.utcnow().strftime("%Y-%m-%d") %}
+    {% set status = "Upcoming" if event[2] > today else "Ongoing" if event[2] == today else "Completed" %}
+    <div class="col-md-4 event-card-wrapper"
+         data-name="{{ event[1]|lower }}"
+         data-venue="{{ event[3]|lower }}"
+         data-type="{{ event[6]|default('Free') }}">
+      <div class="card event-card position-relative">
+        <span class="badge-status">{{ status }}</span>
+        {% if event[5] %}
+          <img src="{{ url_for('static', filename='uploads/' + event[5]) }}" alt="{{ event[1] }}">
+        {% else %}
+          <img src="{{ url_for('static', filename='default.jpg') }}" alt="Default Event">
+        {% endif %}
+        <div class="card-body d-flex flex-column">
+          <h5>{{ event[1] }}</h5>
+          <p class="text-muted mb-1"><strong>Date:</strong> {{ event[2] }}</p>
+          <p class="text-muted mb-1"><strong>Venue:</strong> {{ event[3] }}</p>
+          <p class="small text-secondary mb-3">{{ event[4][:100] }}{% if event[4]|length > 100 %}...{% endif %}</p>
+          <a href="{{ url_for('register') }}" class="btn btn-register mt-auto">Register Now</a>
+        </div>
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+</section>
+
+<!-- 💼 About Us Section -->
+<section id="about" class="text-center">
+  <h2>About Us</h2>
+  <p class="about-text">
+    Smart Event Manager is your one-stop solution for discovering, managing, and participating in events effortlessly. 
+    We aim to simplify event management for organizers and provide a seamless registration experience for participants.
+  </p>
+  <div class="about-features">
+    <div class="feature-card">
+      <div class="feature-icon"><i class="bi bi-calendar-event"></i></div>
+      <h5>Easy Event Management</h5>
+      <p>Organizers can easily add, edit, and manage events with a few clicks.</p>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon"><i class="bi bi-people-fill"></i></div>
+      <h5>Seamless Registration</h5>
+      <p>Participants can register for events quickly with an intuitive form.</p>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon"><i class="bi bi-badge-ad"></i></div>
+      <h5>Real-Time Updates</h5>
+      <p>Stay informed with live event statuses — upcoming, ongoing, or completed.</p>
+    </div>
+  </div>
+</section>
+
+<!-- 🌍 Footer -->
+<footer>
+  <p>© {{ datetime.utcnow().year }} Smart Event Manager | Crafted with ❤️ by Team</p>
+</footer>
+
+<script>
+  // 🔎 Search + Filter Logic
+  document.addEventListener("input", () => {
+    const searchVal = document.getElementById("searchInput").value.toLowerCase();
+    const typeVal = document.getElementById("typeFilter").value;
+
+    document.querySelectorAll(".event-card-wrapper").forEach(card => {
+      const name = card.dataset.name;
+      const venue = card.dataset.venue;
+      const type = card.dataset.type;
+
+      const matchesSearch = name.includes(searchVal) || venue.includes(searchVal);
+      const matchesType = !typeVal || type === typeVal;
+
+      card.style.display = (matchesSearch && matchesType) ? "block" : "none";
+    });
+  });
+</script>
+
+{% endblock %}

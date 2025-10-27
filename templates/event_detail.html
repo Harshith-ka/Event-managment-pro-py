@@ -1,0 +1,139 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="container py-5">
+  <a href="{{ url_for('events_list') }}" class="btn btn-link mb-3">← Back to Events</a>
+  <div class="row g-4">
+    <div class="col-md-7">
+      <div class="card shadow-sm">
+        {% if event.photo %}
+        <img src="{{ url_for('static', filename='uploads/' + event.photo) }}" class="card-img-top" style="height:420px;object-fit:cover;">
+        {% else %}
+        <img src="{{ url_for('static', filename='default.jpg') }}" class="card-img-top" style="height:420px;object-fit:cover;">
+        {% endif %}
+        <div class="card-body">
+          <h3>{{ event.name }}</h3>
+          <p class="text-muted mb-1"><strong>Date:</strong> {{ event.date }}</p>
+          <p class="text-muted mb-1"><strong>Venue:</strong> {{ event.venue }}</p>
+          <p class="small text-secondary mb-3">{{ event.description }}</p>
+
+          <!-- ✅ Co-Host Management Section -->
+          {% if user and user.id == event.organizer_id %}
+          <div class="mt-4">
+            <h5>👥 Co-Hosts</h5>
+            <ul class="list-group mb-3">
+              {% for cohost in cohosts %}
+              <li class="list-group-item d-flex justify-content-between align-items-center">
+                {{ cohost['username'] or cohost['email'] }}
+                <a href="{{ url_for('remove_cohost', event_id=event.id, cohost_id=cohost['id']) }}" class="btn btn-sm btn-outline-danger">Remove</a>
+              </li>
+              {% else %}
+              <li class="list-group-item text-muted">No co-hosts added yet.</li>
+              {% endfor %}
+            </ul>
+
+            <!-- Add Co-Host Form -->
+            <form method="POST" action="{{ url_for('add_cohost', event_id=event.id) }}" class="input-group">
+              <input type="text" name="cohost_email" class="form-control" placeholder="Enter co-host email..." required>
+              <button type="submit" class="btn btn-outline-primary">Add Co-Host</button>
+            </form>
+          </div>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+
+    <div class="col-md-5">
+      <div class="card shadow-sm p-3">
+        <h5>Register for this Event</h5>
+        <p class="text-muted">Secure your spot now — registration is quick.</p>
+
+        <form method="POST" action="{{ url_for('register') }}">
+          <input type="hidden" name="event_id" value="{{ event.id }}">
+          <div class="mb-2">
+            <label class="form-label">Your Name</label>
+            <input class="form-control" name="name" required>
+          </div>
+          <div class="mb-2">
+            <label class="form-label">Email</label>
+            <input class="form-control" name="email" type="email" required>
+          </div>
+          <button class="btn btn-primary w-100">Register</button>
+        </form>
+
+        <hr>
+        <div>
+          <small class="text-muted">Share:</small>
+          <div class="mt-2">
+            <a class="btn btn-outline-secondary btn-sm" href="#">Share</a>
+            <a class="btn btn-outline-secondary btn-sm" href="#">Add to calendar</a>
+          </div>
+        </div>
+        <hr class="my-4">
+
+<div class="container mt-4">
+  <h4>👥 Event Co-Hosts</h4>
+
+  {% if cohosts %}
+    <ul class="list-group mb-3">
+      {% for h in cohosts %}
+        <li class="list-group-item d-flex justify-content-between align-items-center">
+          <div>
+            <strong>{{ h.name }}</strong>
+            <br>
+            <small class="text-muted">{{ h.email }}</small>
+          </div>
+        </li>
+      {% endfor %}
+    </ul>
+  {% else %}
+    <p class="text-muted">No co-hosts added yet.</p>
+  {% endif %}
+
+  {% if session.get('org') %}
+  <form method="POST" action="{{ url_for('add_cohost') }}" class="border p-3 rounded shadow-sm">
+    <input type="hidden" name="event_id" value="{{ event.id }}">
+    <div class="mb-2">
+      <label class="form-label">Co-Host Name</label>
+      <input type="text" class="form-control" name="cohost_name" required>
+    </div>
+    <div class="mb-2">
+      <label class="form-label">Co-Host Email</label>
+      <input type="email" class="form-control" name="cohost_email" required>
+    </div>
+    <button type="submit" class="btn btn-success w-100">Add Co-Host</button>
+  </form>
+  {% else %}
+  <p class="text-muted">Only organizers can add co-hosts.</p>
+  {% endif %}
+</div>
+        <!-- 💬 Comments Section -->
+        <div class="container mt-5">
+          <h4>💬 Discussion</h4>
+          {% if user %}
+          <form method="POST" class="mb-4">
+            <div class="input-group">
+              <input type="text" name="comment" class="form-control" placeholder="Write a comment..." required>
+              <button type="submit" class="btn btn-primary">Post</button>
+            </div>
+          </form>
+          {% else %}
+          <p><a href="{{ url_for('user_login') }}">Login</a> to comment</p>
+          {% endif %}
+
+          {% for c in comments %}
+          <div class="card mb-2">
+            <div class="card-body">
+              <strong>{{ c['username'] }}</strong>
+              <p class="mb-1">{{ c['comment'] }}</p>
+              <small class="text-muted">{{ c['timestamp'] }}</small>
+            </div>
+          </div>
+          {% else %}
+          <p>No comments yet. Be the first to start the discussion!</p>
+          {% endfor %}
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

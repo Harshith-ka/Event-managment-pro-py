@@ -1,0 +1,109 @@
+.card {
+  box-shadow: 0 2px 8px rgba(15, 23, 42, 0.06);
+}
+#chat-button {
+  position: fixed;
+  bottom: 25px;
+  right: 25px;
+  background: #007bff;
+  color: white;
+  font-size: 24px;
+  border-radius: 50%;
+  width: 55px;
+  height: 55px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+#chat-box {
+  position: fixed;
+  bottom: 90px;
+  right: 25px;
+  width: 300px;
+  background: white;
+  border-radius: 10px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+  display: none;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+#chat-box.open {
+  display: flex;
+}
+
+#chat-header {
+  background: #007bff;
+  color: white;
+  padding: 8px;
+  text-align: center;
+  font-weight: bold;
+}
+
+#chat-messages {
+  padding: 10px;
+  height: 250px;
+  overflow-y: auto;
+}
+
+.msg {
+  margin: 5px 0;
+  padding: 6px 10px;
+  border-radius: 8px;
+  max-width: 80%;
+}
+
+.msg.user {
+  background: #007bff;
+  color: white;
+  margin-left: auto;
+}
+
+.msg.bot {
+  background: #f1f1f1;
+  color: #333;
+  margin-right: auto;
+}
+
+#chat-input {
+  border: none;
+  border-top: 1px solid #ddd;
+  padding: 8px;
+  width: 100%;
+  outline: none;
+}
+body {
+  background: linear-gradient(to right, #f8f9fa, #eef2f3);
+  font-family: "Poppins", sans-serif;
+}
+
+h2 {
+  font-weight: 600;
+}
+
+.table {
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+.btn {
+  border-radius: 10px !important;
+}
+
+.modal-content {
+  border-radius: 15px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
+}
+
+.table-hover tbody tr:hover {
+  background-color: #f3f8ff;
+  transition: 0.2s;
+}
+.navbar-logo {
+  font-weight: 700;
+  color: #333;
+  font-size: 1.4rem;
+}
